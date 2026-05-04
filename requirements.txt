@@ -1,0 +1,15 @@
+# Core Dependencies
+torch>=2.0.0
+numpy>=1.24.0
+
+# Speech Recognition
+faster-whisper>=0.9.0
+transformers>=4.30.0
+
+# Audio Processing
+pyaudio>=0.2.13
+webrtcvad>=2.0.10
+
+# GUI
+kivy>=2.2.0
+
