@@ -67,14 +67,14 @@ class AIProcessor:
 
     def transcribe(self, audio_frames, sample_rate=16000):
         """
-        Converts recorded audio into text and detects emotions.
+        Converts recorded audio into text. 
         
         Args:
             audio_frames: List of audio data chunks (bytes)
             sample_rate: How many samples per second in the audio
             
         Returns:
-            results: List of dictionaries with 'text' and 'emotion' keys
+            dict: {"text": "transcribed text"}
         """
         # Combine all audio chunks into one piece
         audio_data = b"".join(audio_frames)
@@ -93,20 +93,14 @@ class AIProcessor:
             )
         
         # Use Whisper to convert speech to text
-        # beam_size=1 means faster processing (good for Raspberry Pi)
         segments, _ = self.whisper.transcribe(
             audio_array, 
             language="en", 
             beam_size=1
         )
         
-        # Process each speech segment
-        results = []
-        for segment in segments:
-            emotion = self.detect_emotion(segment.text)
-            results.append({
-                "text": segment.text, 
-                "emotion": emotion
-            })
+        # Combine all segments into one text
+        full_text = " ".join([segment.text for segment in segments])
         
-        return results
+        return {"text": full_text}
+

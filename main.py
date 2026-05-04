@@ -46,11 +46,15 @@ def main():
         """Called when the AI is analyzing the recorded speech"""
         UserInterface.show_state("thinking")
 
-    def on_speech_analyzed(text, emotion):
-        """Called when the AI has finished its analysis"""
+    def on_speech_analyzed(result):
+        text = result['text']
         print(f"You said: {text}")
+        
+        # Detect emotion
+        emotion = ai_processor.detect_emotion(text)
         print(f"Detected emotion: {emotion}")
         UserInterface.show_emotion(emotion)
+
 
     # Step 4: Create audio engine with our callback functions
     audio_engine = AudioEngine(

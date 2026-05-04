@@ -167,19 +167,16 @@ class AudioEngine:
                             if self.on_processing:
                                 self.on_processing()
                             
-                            # Send audio to AI for transcription and emotion detection
-                            results = ai_processor.transcribe(
-                                list(recorded_frames), 
-                                self.actual_rate
-                            )
                             
-                            # Send results back via callback
+                            
+                            # Send result back via callback
                             if self.on_transcription:
-                                for result in results:
-                                    self.on_transcription(
-                                        result['text'], 
-                                        result['emotion']
-                                    )
+                                result = ai_processor.transcribe(
+                                    list(recorded_frames), 
+                                    self.actual_rate
+                                )
+                                self.on_transcription(result)
+
                             
                             # Reset for next recording
                             recorded_frames.clear()
