@@ -47,6 +47,7 @@ class AIProcessor:
             n_threads=4,
             verbose=False,
         )
+        self.history = []  # conversation context
 
         print("AI models loaded successfully!")
 
@@ -69,8 +70,9 @@ class AIProcessor:
         Returns:
             response: The full text reply (string)
         """
+        self.history.append({"role": "user", "content": text})
         stream = self.llm.create_chat_completion(
-            messages=[{"role": "user", "content": text}],
+            messages=self.history,
             max_tokens=256,
             stream=True,
         )
@@ -81,6 +83,7 @@ class AIProcessor:
                 full += delta
                 if on_token:
                     on_token(full)
+        self.history.append({"role": "assistant", "content": full})
         return full
 
     def transcribe(self, audio_frames, sample_rate=16000):
