@@ -9,6 +9,7 @@ from kivy.app import App
 from kivy.uix.image import Image
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 from kivy.clock import mainthread, Clock
 from Emojis.emoji_paths import EMOJI_PATHS
 
@@ -32,7 +33,17 @@ class KivyUserInterface(App):
             source=EMOJI_PATHS["default"][0],
             fit_mode="contain"  # Scale image to fit without distortion
         )
-        root.add_widget(self.emoji_image)
+        # root.add_widget(self.emoji_image)
+
+        # NEW: Label for displaying Gemma text responses
+        self.response_label = Label(
+            text="",
+            halign="center",
+            valign="middle",
+            size_hint=(1, 1),
+        )
+        self.response_label.bind(size=lambda inst, val: setattr(inst, "text_size", val))
+        root.add_widget(self.response_label)
 
         close_button = Button(
             text="X",
@@ -101,6 +112,19 @@ class KivyUserInterface(App):
             self.animation_event.cancel()
             self.animation_event = None
         self.current_emotion = None
+
+    @mainthread
+    def show_text(self, text):
+        """
+        Display a text response from Gemma on screen.
+
+        Args:
+            text: The response string to display
+        """
+        self.stop_animation()
+        self.emoji_image.source = EMOJI_PATHS["default"][0]
+        self.emoji_image.reload()
+        self.response_label.text = text
 
     def close_application(self, _instance):
         """Closes the application via the X button."""

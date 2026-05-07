@@ -40,6 +40,10 @@ SILENCE_DURATION_MS = 1500
 # Recommendation for Raspberry Pi 5: "small" (good balance)
 WHISPER_MODEL_SIZE = "tiny"
 
-# Path to the emotion detection model
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-EMOTION_MODEL_NAME = os.path.join(BASE_DIR, "models", "emotion_classifier")
+
+# OLD: emotion detection model
+# EMOTION_MODEL_NAME = os.path.join(BASE_DIR, "models", "emotion_classifier")
+
+# Path to the Gemma 4 GGUF model
+GEMMA_MODEL_PATH = os.path.join(BASE_DIR, "models", "gemma-4-E2B-it-Q4_K_M.gguf")

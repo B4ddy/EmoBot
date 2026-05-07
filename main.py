@@ -16,7 +16,7 @@ from kivy.config import Config
 Config.set('kivy',     'log_level',   'warning')
 Config.set('graphics', 'width',       '800')
 Config.set('graphics', 'height',      '480')
-Config.set('graphics', 'fullscreen',  '1')
+Config.set('graphics', 'fullscreen',  '0')
 Config.set('graphics', 'show_cursor', '0')
 
 
@@ -40,20 +40,16 @@ def main():
     # Step 3: Define what should happen on audio events
     def on_speech_detected():
         """Called when the microphone hears someone speaking"""
-        UserInterface.show_state("listening")
+        UserInterface.show_text("thinking...")
 
     def on_processing_speech():
         """Called when the AI is analyzing the recorded speech"""
-        UserInterface.show_state("thinking")
+        UserInterface.show_text(" processing...")
 
     def on_speech_analyzed(result):
         text = result['text']
         print(f"You said: {text}")
-        
-        # Detect emotion
-        emotion = ai_processor.detect_emotion(text)
-        print(f"Detected emotion: {emotion}")
-        UserInterface.show_emotion(emotion)
+        ai_processor.get_response(text, on_token=UserInterface.show_text)
 
 
     # Step 4: Create audio engine with our callback functions

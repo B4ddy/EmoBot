@@ -3,19 +3,20 @@ AI Processor
 ============
 Handles two AI tasks:
 1. Speech-to-Text: Converts spoken words into written text (using Whisper)
-2. Emotion Detection: Analyzes the text to recognize the speaker's emotion
+2. LLM Response: Sends transcribed text to Gemma 4 via llama-cpp-python
 """
 
-import torch
+# import torch                                                          # OLD: not needed anymore
+# from transformers import AutoTokenizer, AutoModelForSequenceClassification  # OLD: emotion model
 import numpy as np
 from faster_whisper import WhisperModel
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from config import WHISPER_MODEL_SIZE, EMOTION_MODEL_NAME
+from llama_cpp import Llama
+from config import WHISPER_MODEL_SIZE, GEMMA_MODEL_PATH
 
 
 class AIProcessor:
     """
-    Processes audio to extract text and detect emotions.
+    Processes audio to extract text and get a Gemma 4 LLM response.
     """
     
     def __init__(self):
@@ -26,48 +27,65 @@ class AIProcessor:
         print("Loading Whisper speech recognition model...")
         # Use CPU mode with int8 to save memory on the Raspberry Pi
         self.whisper = WhisperModel(
-            WHISPER_MODEL_SIZE, 
-            device="cpu", 
+            WHISPER_MODEL_SIZE,
+            device="cpu",
             compute_type="int8"
         )
-        
-        print("Loading emotion detection model...")
-        self.tokenizer = AutoTokenizer.from_pretrained(EMOTION_MODEL_NAME)
-        self.emotion_model = AutoModelForSequenceClassification.from_pretrained(
-            EMOTION_MODEL_NAME
+
+        # OLD: emotion detection model
+        # print("Loading emotion detection model...")
+        # self.tokenizer = AutoTokenizer.from_pretrained(EMOTION_MODEL_NAME)
+        # self.emotion_model = AutoModelForSequenceClassification.from_pretrained(
+        #     EMOTION_MODEL_NAME
+        # )
+        # self.emotions = ["sad", "joy", "love", "anger", "fear", "surprise"]
+
+        print("Loading Gemma 4 model via llama-cpp...")
+        self.llm = Llama(
+            model_path=GEMMA_MODEL_PATH,
+            n_ctx=2048,
+            n_threads=4,
+            verbose=False,
         )
-        
-        # List of emotions the model can recognize
-        self.emotions = ["sad", "joy", "love", "anger", "fear", "surprise"]
-        
+
         print("AI models loaded successfully!")
 
-    def detect_emotion(self, text):
+    # OLD: emotion detection via classifier
+    # def detect_emotion(self, text):
+    #     inputs = self.tokenizer(text, return_tensors="pt")
+    #     with torch.inference_mode():
+    #         logits = self.emotion_model(**inputs).logits
+    #     prediction_index = torch.argmax(logits, dim=-1).item()
+    #     return self.emotions[prediction_index]
+
+    def get_response(self, text, on_token=None):
         """
-        Analyzes a text to determine which emotion it expresses.
-        
+        Sends transcribed text to Gemma 4 and streams the reply token by token.
+
         Args:
-            text: The text to analyze (string)
-            
+            text: The transcribed speech (string)
+            on_token: optional callback(str) called with each new token chunk
+
         Returns:
-            emotion: One of ["sad", "joy", "love", "anger", "fear", "surprise"]
+            response: The full text reply (string)
         """
-        # Convert the text into numbers the model understands
-        inputs = self.tokenizer(text, return_tensors="pt")
-        
-        # Run the emotion detection model (without computing gradients)
-        with torch.inference_mode():
-            logits = self.emotion_model(**inputs).logits
-        
-        # Find out which emotion has the highest score
-        prediction_index = torch.argmax(logits, dim=-1).item()
-        detected_emotion = self.emotions[prediction_index]
-        
-        return detected_emotion
+        stream = self.llm.create_chat_completion(
+            messages=[{"role": "user", "content": text}],
+            max_tokens=256,
+            stream=True,
+        )
+        full = ""
+        for chunk in stream:
+            delta = chunk["choices"][0]["delta"].get("content", "")
+            if delta:
+                full += delta
+                if on_token:
+                    on_token(full)
+        return full
 
     def transcribe(self, audio_frames, sample_rate=16000):
         """
-        Converts recorded audio into text. 
+        Converts recorded audio into text.
         
         Args:
             audio_frames: List of audio data chunks (bytes)
@@ -94,8 +112,8 @@ class AIProcessor:
         
         # Use Whisper to convert speech to text
         segments, _ = self.whisper.transcribe(
-            audio_array, 
-            language="en", 
+            audio_array,
+            language="en",
             beam_size=1
         )
         
