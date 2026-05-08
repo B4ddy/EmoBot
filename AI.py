@@ -89,7 +89,7 @@ class AIProcessor:
                 token_count += 1
                 
                 
-                if on_token and token_count % 8 == 0:
+                if on_token and token_count % 4 == 0:
                     on_token(full)
                     
         
