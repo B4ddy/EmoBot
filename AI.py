@@ -44,7 +44,7 @@ class AIProcessor:
         self.llm = Llama(
             model_path=GEMMA_MODEL_PATH,
             n_ctx=2048,
-            n_threads=4,
+            n_threads=3,
             verbose=False,
         )
         self.history = []  # conversation context
@@ -59,6 +59,7 @@ class AIProcessor:
     #     prediction_index = torch.argmax(logits, dim=-1).item()
     #     return self.emotions[prediction_index]
 
+    # In AI.py -> AIProcessor
     def get_response(self, text, on_token=None):
         """
         Sends transcribed text to Gemma 4 and streams the reply token by token.
@@ -70,6 +71,8 @@ class AIProcessor:
         Returns:
             response: The full text reply (string)
         """
+        
+        
         self.history.append({"role": "user", "content": text})
         stream = self.llm.create_chat_completion(
             messages=self.history,
@@ -77,12 +80,22 @@ class AIProcessor:
             stream=True,
         )
         full = ""
+        token_count = 0 
+        
         for chunk in stream:
             delta = chunk["choices"][0]["delta"].get("content", "")
             if delta:
                 full += delta
-                if on_token:
+                token_count += 1
+                
+                
+                if on_token and token_count % 8 == 0:
                     on_token(full)
+                    
+        
+        if on_token: 
+            on_token(full) 
+            
         self.history.append({"role": "assistant", "content": full})
         return full
 
