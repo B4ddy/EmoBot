@@ -16,7 +16,7 @@ from kivy.config import Config
 Config.set('kivy',     'log_level',   'warning')
 Config.set('graphics', 'width',       '800')
 Config.set('graphics', 'height',      '480')
-Config.set('graphics', 'fullscreen',  '0')
+Config.set('graphics', 'fullscreen',  '1')
 Config.set('graphics', 'show_cursor', '0')
 
 
@@ -40,7 +40,7 @@ def main():
     # Step 3: Define what should happen on audio events
     def on_speech_detected():
         """Called when the microphone hears someone speaking"""
-        UserInterface.show_text("thinking...")
+        UserInterface.show_text("listening...")
 
     def on_processing_speech():
         """Called when the AI is analyzing the recorded speech"""

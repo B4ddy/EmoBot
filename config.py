@@ -29,7 +29,7 @@ VAD_AGGRESSIVENESS = 3
 
 # How long to wait in silence before stopping the recording? (in milliseconds)
 # 1000 ms = 1 second
-SILENCE_DURATION_MS = 1500
+SILENCE_DURATION_MS = 2000
 
 
 

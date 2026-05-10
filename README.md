@@ -47,9 +47,8 @@ Please create a folder called "models":
 mkdir -p models/emotion_classifier
 cd models/emotion_classifier
 ```
-
-Here is the project folder as it should look when complete. The model can be downloaded from the models folder and copied into your own project:
-https://drive.google.com/drive/u/0/folders/1ru94H5CcBoC5L4P7kVU3xqAmDXcQ7Q1J
+gemma models 
+https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/tree/main
 
 Then go back to the project directory:
 

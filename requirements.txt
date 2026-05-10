@@ -6,8 +6,8 @@ numpy>=1.24.0
 faster-whisper>=0.9.0
 # transformers>=4.30.0  # removed: replaced by llama-cpp-python
 
-# LLM
-llama-cpp-python>=0.2.0
+# LLM neon  support for ARM-based devices (e.g., Raspberry Pi)
+llama-cpp-python>=0.2.0 -C cmake.args="-DGGML_NEON=ON"
 
 # Audio Processing
 pyaudio>=0.2.13

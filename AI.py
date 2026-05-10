@@ -47,7 +47,17 @@ class AIProcessor:
             n_threads=3,
             verbose=False,
         )
-        self.history = []  # conversation context
+        self.history = [
+            {
+                "role": "system",
+                "content": (
+                    "You are a  conversational partner. "
+                    "Reply in normal sentences only. "
+                    "Never use markdown, bullet points, numbered lists, bold, or asterisks. "
+                    
+                ),
+            }
+        ]
 
         print("AI models loaded successfully!")
 
@@ -76,7 +86,7 @@ class AIProcessor:
         self.history.append({"role": "user", "content": text})
         stream = self.llm.create_chat_completion(
             messages=self.history,
-            max_tokens=256,
+            max_tokens=128,
             stream=True,
         )
         full = ""
