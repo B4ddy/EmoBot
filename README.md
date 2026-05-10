@@ -110,7 +110,7 @@ On the first start, the AI models are loaded into memory — this typically take
 ## Project Structure
 
 ```
-EmotionBot/
+EmoBot/
 ├── main.py          # Entry point, connects all components
 ├── AI.py            # Transcription (Whisper) and emotion classification (BERT)
 ├── audio.py         # Microphone recording and Voice Activity Detection
