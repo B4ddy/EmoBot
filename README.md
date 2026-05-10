@@ -32,11 +32,11 @@ For each speech input, the bot goes through four steps:
 
 ## Installation
 
-### 1. Clone the repository
+### 1. Clone the specific branch of this repo
 
 ```bash
-git clone https://github.com/B4ddy/EmoBot
-cd EmotionBot
+git clone --branch GemmaBot --single-branch https://github.com/B4ddy/EmoBot
+cd EmoBot
 ```
 
 ### 2. Download the emotion detection model
@@ -90,7 +90,7 @@ On the first start, the AI models are loaded into memory — this typically take
 ## Project Structure
 
 ```
-EmotionBot/
+EmoBot/
 ├── main.py          # Entry point, connects all components
 ├── AI.py            # Transcription (Whisper) and emotion classification (BERT)
 ├── audio.py         # Microphone recording and Voice Activity Detection
