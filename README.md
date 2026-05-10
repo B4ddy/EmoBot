@@ -36,7 +36,7 @@ For each speech input, the bot goes through four steps:
 
 ```bash
 git clone https://github.com/B4ddy/EmoBot
-cd EmotionBot
+cd EmoBot
 ```
 
 ### 2. Download the emotion detection model
@@ -49,7 +49,7 @@ cd models/emotion_classifier
 ```
 
 Here is the project folder as it should look when complete. The model can be downloaded from the models folder and copied into your own project:
-https://drive.google.com/drive/u/0/folders/1ru94H5CcBoC5L4P7kVU3xqAmDXcQ7Q1J
+https://drive.google.com/drive/folders/1Qi__mDNT-VP3x5WpCeT3K-H0MzO4_V-j?usp=sharing
 
 Then go back to the project directory:
 
@@ -57,20 +57,35 @@ Then go back to the project directory:
 cd ../..
 ```
 
+
 ### 3. Install system dependencies
 
 ```bash
 sudo apt update
-sudo apt install -y python3-pip portaudio19-dev python3-pyaudio
+sudo apt install -y python3-pip python3-venv portaudio19-dev python3-pyaudio
 ```
 
-### 4. Install PyTorch (CPU-optimized for Raspberry Pi)
+### 4. Create a virtual environment with system package access
+
+```bash
+# Create the virtual environment with system package access
+python3 -m venv venv --system-site-packages
+
+# Activate the virtual environment
+source venv/bin/activate
+```
+(You will know this worked because your terminal prompt will now start with (venv)).
+
+
+
+
+### 5. Install PyTorch (CPU-optimized for Raspberry Pi)
 
 ```bash
 pip3 install torch --index-url https://download.pytorch.org/whl/cpu
 ```
 
-### 5. Install Python packages
+### 6. Install Python packages
 
 ```bash
 pip3 install -r requirements.txt
@@ -81,6 +96,10 @@ pip3 install -r requirements.txt
 ## Running
 
 ```bash
+# 1. Activate the environment (if not already active)
+source venv/bin/activate
+
+# 2. Run the bot
 python3 main.py
 ```
 
